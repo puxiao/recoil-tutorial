@@ -55,6 +55,7 @@ Recoil 系列教程，学习和探索新一代 React 状态库。
 ## 文章目录
 
 * 01 为什么选择 Recoil 而不是 Redux/MobX ？
+* 02 Recoil 的理念和特性
 
 
 
