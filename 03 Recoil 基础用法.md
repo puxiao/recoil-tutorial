@@ -225,6 +225,39 @@ console.log(selectedIndex.key) // selectedIndex
 
 <br>
 
+#### 实际使用技巧
+
+在实际的项目中，我更倾向于将相关的多个变量定义在同一个文件中，然后集中导出这些原子变量的引用(RecoilState实例)。
+
+```
+export const xxAa = atom({
+  key:'xxAa',
+  default:'xxxxxxx'
+})
+
+export const xxBb = atom({
+  key:'xxBb',
+  default:[]
+})
+
+export const xxCc = atom({
+  key:'xxCc',
+  default:{}
+})
+```
+
+> 这样当其他地方需要引入这些变量时，比较容易引入这些变量的 RecoilState 实例，也就是下面要讲解的 Selector 选择器。
+>
+> ```
+> import { xxBb } from 'xxxxx'
+> 
+> ...
+> ```
+
+
+
+<br>
+
 ## selector
 
 selector 是选择器，也就是通过 RecoilState 实例 从顶层数据状态集合中 查找到对应变量的方法。
