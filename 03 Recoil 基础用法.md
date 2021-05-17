@@ -67,7 +67,15 @@ export type RecoilRootProps = {
 export const RecoilRoot: React.FC<RecoilRootProps>;
 ```
 
-> 可以看出，RecoilRoot 包裹的组件，必须是 React.FC 函数组件。
+可以看出，RecoilRoot 包裹的组件，必须是 React.FC 函数组件。
+
+此外 <RecoilRoot \> 接收一个可选参数 initializeState，用于初始化整个数据状态。
+
+该值类型为 `MutableSnapshot`。
+
+> mutable：可以改变的  
+> snapshot：快照  
+> MutableSnapshot：可变快照，具体用法我们现在不做过多讨论，计划在后面单独写一篇关于 快照(Snapshot) 的文章。
 
 
 
@@ -219,7 +227,7 @@ console.log(selectedIndex.key) // selectedIndex
 
 ## selector
 
-selector 是选择器，也就是通过 key 从顶层数据状态集合中 查找到对应变量的方法。
+selector 是选择器，也就是通过 RecoilState 实例 从顶层数据状态集合中 查找到对应变量的方法。
 
 我们无法直接使用 selector，而是会使用他派生出来的 4 种钩子函数：
 
