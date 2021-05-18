@@ -258,19 +258,420 @@ export const xxCc = atom({
 
 <br>
 
+> 或许你可以在项目创建一个名为 atoms 的目录，用来专门存放这些集中定义的变量。例如：
+>
+> 1. src/atoms/modeA.ts
+> 2. src/atoms/modeB.ts
+> 3. ...
+
+
+
+<br>
+
 ## selector
 
-selector 是选择器，也就是通过 RecoilState 实例 从顶层数据状态集合中 查找到对应变量的方法。
+selector() 是一个函数，官方的定义为：接收原子数据(RecoilState)或其他选项作为数据输入源的纯函数。
 
-我们无法直接使用 selector，而是会使用他派生出来的 4 种钩子函数：
+我们正是通过 selector() 函数来将 原子数据 派生/衍生 出新的数据。
+
+
+
+<br>
+
+**selector 对应的 .d.ts 解读：**
+
+```
+export interface ReadOnlySelectorOptions<T> {
+    key: string;
+    get: (opts: { get: GetRecoilValue, getCallback: GetCallback }) => Promise<T> | RecoilValue<T> | T;
+    dangerouslyAllowMutability?: boolean;
+}
+
+export interface ReadWriteSelectorOptions<T> extends ReadOnlySelectorOptions<T> {
+  set: (
+    opts: {
+      set: SetRecoilState;
+      get: GetRecoilValue;
+      reset: ResetRecoilState;
+    },
+    newValue: T | DefaultValue,
+  ) => void;
+}
+
+export function selector<T>(options: ReadWriteSelectorOptions<T>): RecoilState<T>;
+export function selector<T>(options: ReadOnlySelectorOptions<T>): RecoilValueReadOnly<T>;
+```
+
+
+
+<br>
+
+#### 参数 ReadWriteSelectorOptions、ReadOnlySelectorOptions
+
+我们可以看到，selector() 实际上可接受 2 种参数：
+
+1. ReadWriteSelectorOptions：需要配置 set 属性，用于 `读/写` 数据
+
+2. ReadOnlySelectorOptions：需要配置 get 属性，用于 `只读` 数据
+
+   > get 对应的箭头函数中，有 2 个参数：get、getCallback
+
+在本文中，我们先学习一下 get 这种情况，至于 set 我们以后再详细讲解。
+
+
+
+<br>
+
+#### 返回值 RecoilState、RecoilValueReadOnly
+
+根据 selector() 参数不同，返回的对象也不同。
+
+1. 参数为 ReadWriteSelectorOptions，则返回 RecoilState
+
+   > 可用作  衍生，因为相当于创建了一个可读可写、新的变量
+   >
+   > 请注意：上面这句 衍生 的理解是我个人目前的认知，不一定正确。
+
+2. 参数为 ReadOnlySelectorOptions，则返回 RecoilValueReadOnly
+
+   > 可用作 派生，因为相当于创建了一个对原始数据某属性值或分支 加工而成的只读变量值
+
+
+
+
+
+#### 举个例子
+
+1. 我们先使用 atom() 创建一个变量，该变量用于记录一个字符串的值。
+2. 然后再使用 selector() 派生出一个用于表示该字符串长度的只读变量。
+
+```
+const textState = atom({
+    key: 'textState',
+    default: ''
+})
+
+const countState = selector({
+    key: 'charCountState',
+    get: ({ get }) => {
+        const text = get(textState) //获取到字符串
+        return text.length //返回字符串的长度
+    }
+})
+```
+
+> 请注意，我们在 selector() 的配置项的 get 属性中，目前只使用 get 方法，暂时用不到 getCallback。
+>
+> 该 get 方法类型为 GetRecoilValue
+
+> 由于 get 出现了 2 次，这里重申一下，千万别记混淆了：
+>
+> 1. 第 1 个 get ：selector() 配置项 get 属性
+> 2. 第 2 个 get：第 1 个 get 属性对应的箭头函数中约定的 get() 函数。
+
+> 为了简便区分 2 个 get，在本文中我可能称呼他们为：get 属性、get 函数
+
+
+
+<br>
+
+**补充说明：**
+
+假设你使用 selector() 派生的变量依赖多个 原子数据状态，那么你可以多次使用 get 函数。
+
+举例：
+
+```
+const xxxState = selector({
+    key: 'xxxState',
+    get: ({ get }) => {
+        const aa = get(aaState)
+        const bb = get(bbState)
+        ...
+        return xxxxx
+    }
+})
+```
+
+
+
+<br>
+
+## Recoil的 4 个基础 钩子函数(hooks)
+
+我们前面讲解过的 atom()、selector() 函数都是用于定义原子变量的。
+
+那么如何 获取变量值 或者 修改变量值？
+
+这就需要用到 Recoil 为我们提供的 4 个基础的钩子函数，他们分别是：
 
 1. useRecoilState()：获取变量的读(值)、写
 2. useRecoilValue()：仅获取变量的读(值)
 3. useSetRecoilState()：仅获取变量的写
 4. useResetRecoilState()：重新初始化该变量的值
 
+> 还有其他钩子函数，但是我们本文只讲解这 4 个。
+
 
 
 <br>
 
-//本文未完待续...
+#### useRecoilState()
+
+对应的 .d.ts 的定义：
+
+```
+export function useRecoilState<T>(recoilState: RecoilState<T>): [T, SetterOrUpdater<T>];
+```
+
+<br>
+
+useRecoilState() 的用发几乎和 useState 一模一样。
+
+为什么说一模一样呢，因为 useRecoilState() 返回的数组和 useState 也是一样的，第 1 个值为 变量的值，第 2 个值为修改变量值的函数。
+
+唯一区别在于 useRecoilState() 需要传入的参数是 原子变量状态，也就是 RecoilState 实例。
+
+
+
+<br>
+
+**使用示例：**
+
+```
+const textState = atom({
+    key: 'textState',
+    default: ''
+})
+
+const [text, setText] = useRecoilState(textState)
+```
+
+
+
+<br>
+
+**补充说明：**
+
+useRecoilState 返回的第 2 个修改函数，如同 useState 那样，也有 2 种修改方式：
+
+> 我们以上面使用示例中的 setText 来举例
+
+第1种：直接传入新值覆盖旧值
+
+```
+setText(newValue)
+```
+
+第2种：使用箭头函数，先获取旧值，再执行一些计算后，将箭头函数的返回值作为新值
+
+```
+setText((currentValue) => { return xxx })
+```
+
+
+
+
+
+<br>
+
+#### useRecoilValue()、useSetRecoilState()
+
+当我们理解完 useRecoilState() 之后，就顺带可以理解 useRecoilValue() 和 useSetRecoilState() 了。
+
+useRecoilState() 即返回变量的值，又返回修改变量的方法。
+
+1. useRecoilValue()：只得到变量的值
+2. useSetRecoilState()：只得到修改变量的方法
+
+
+
+<br>
+
+**使用示例：**
+
+```
+const [text, setText] = useRecoilState(textState)
+
+...
+
+const text = useRecoilValue(textState)
+const setText = useSetRecoilState(textState)
+```
+
+> 请注意，对于一些由 selector() 派生出的只读变量，我们就需要用到 useRecoilValue() 来获取该变量的值。
+
+
+
+<br>
+
+#### useResetRecoilState()
+
+对应的 .d.ts 的定义：
+
+```
+export function useResetRecoilState(recoilState: RecoilState<any>): Resetter;
+```
+
+<br>
+
+useResetRecoilState() 函数用于重置变量。
+
+1. 参数是重置变量对应的 RecoilState 实例
+2. 返回值是重置变量对应的函数
+
+
+
+<br>
+
+**使用示例：**
+
+```
+const textState = atom({
+    key: 'textState',
+    default: ''
+})
+
+const reset = useResetRecoilState(textState)
+
+const handleClick = () => {
+  reset()
+}
+
+<button onClick={handleClick}>reset</button>
+```
+
+> 当点击按钮后，会将 textState 对应的变量值恢复成默认值，也就是当初使用 atom() 创建该变量时配置的 default 的值。
+
+
+
+<br>
+
+## 完整示例
+
+本文，我们学习了 Recoil 最为基础的一些知识。
+
+1. <RecoilRoot \>
+2. atom()
+3. selector()
+4. useRecoilState()、useRecoilValue()、useSetRecoilState()、useResetRecoilState()
+
+
+
+<br>
+
+我们现在将使用 React + TypeScript + Recoil 创建一个最基础的完整使用示例。
+
+示例内容：
+
+1. 页面上有一个输入框，默认什么内容都没有
+2. 当输入文字后，分别显示输入框的文字内容、文字的总字数
+3. 当点击按钮时，恢复输入框的默认值(空)
+
+
+
+<br>
+
+**App.tsx**
+
+```
+import { RecoilRoot } from 'recoil'
+import HelloRecoil from '@/components/hello-recoil'
+
+function App() {
+  return (
+    <RecoilRoot>
+        <HelloRecoil />
+    </RecoilRoot>
+  )
+}
+export default App
+```
+
+> 使用 <RecoilRoot \> 标签包裹住整个 App 的子项，创建出 Recoil 的上下作用域。
+
+> 提示：我实际还添加了 react 的 alias，采用 @/components/ 这种方式获取自定义组件
+
+
+
+<br>
+
+**HelloRecoil.tsx**
+
+```
+import React from 'react'
+import { atom, selector, useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil'
+
+//创建一个用于记录 文字 值的变量
+const textState = atom({
+    key: 'textState',
+    default: ''
+})
+
+//派生出获取 文字总字数 的变量
+const countState = selector({
+    key: 'charCountState',
+    get: ({ get }) => {
+        const text = get(textState)
+        return text.length
+    }
+})
+
+const HelloRecoil = () => {
+    const [text, setText] = useRecoilState(textState) //获取文字值、修改文字值的函数
+    const count = useRecoilValue(countState) //获取文字总字数对应的变量值
+    const reset = useResetRecoilState(textState) //获取重置文字值的函数
+
+    const handleOnChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+        setText(event.target.value) //修改文字的值
+    }
+
+    const handleClick = () => {
+        reset() //重置，恢复文字默认值
+    }
+
+    return (
+        <div>
+            <input onChange={handleOnChange} value={text} />
+            <div>text: {text}</div>
+            <div>count: {count}</div>
+            <button onClick={handleClick}>reset</button>
+        </div>
+    )
+}
+
+export default HelloRecoil
+```
+
+> 本示例是为了简化，所以将所有数据变量(状态) 的内容都写在了同一个组件内。
+>
+> 实际项目中操控这些数据变化(状态)的，一定是分散在不同的组件中的。
+
+
+
+<br>
+
+虽然本文比较出长，但是实际讲解的 Recoil 基础内容却没有多少。
+
+但是当你学会这些基础的用法后，已经可以应付很多常见的 状态共享管理应用场景了。
+
+
+
+<br>
+
+**至此，你已经学习了：**
+
+1. Recoil 原理和特性
+2. Recoil 基础用法
+
+那么接下来再去学习 Recoil 其他钩子函数，就会比较容易了。
+
+我强烈建议你直接去 Recoil 官方文档，逐个阅读他的 API，对其他 钩子函数 有一个初步的印象，然后在实战中不断提高。
+
+https://recoiljs.org/docs/api-reference/core/atom
+
+
+
+<br>
+
+下一篇，我会讲解一下 Recoil 都会有哪些高级用法。
