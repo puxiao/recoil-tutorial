@@ -39,7 +39,7 @@ Recoil 系列教程，学习和探索新一代 React 状态库。
 
 实际上 Recoil 并不复杂，我更加推荐的是直接去官网查看和学习。
 
-**Recoil官网地址：**https://recoiljs.org/
+**Recoil官网地址：** https://recoiljs.org/
 
 <br>
 
