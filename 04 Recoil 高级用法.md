@@ -144,7 +144,7 @@ https://recoiljs.org/docs/guides/dev-tools
 
 <br>
 
-## 快照(snapshot)
+## 原子状态快照
 
 无论同步还是异步修改 原子状态，当有新值替换旧值后，都不会进行旧值保存。
 
