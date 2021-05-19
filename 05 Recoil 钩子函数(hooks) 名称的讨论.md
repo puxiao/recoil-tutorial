@@ -141,6 +141,8 @@ Recoil 核心开发人员计划未来将所有的 Recoil 钩子函数都以 “u
 >
 > https://github.com/pmndrs/jotai
 
+> **特别强调一下，这个 网友B，其实就是 jotai 的作者**
+
 
 
 <br>
