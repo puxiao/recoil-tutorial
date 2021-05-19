@@ -65,6 +65,7 @@ Recoil 系列教程，学习和探索新一代 React 状态库。
   * 代码单元测试
   * 代码调试工具
   * 原子状态快照
+* 05 Recoil 钩子函数(hooks) 名称的讨论
 
 
 
@@ -102,6 +103,18 @@ Recoil 系列教程，学习和探索新一代 React 状态库。
 react-hook-tutorial：https://github.com/puxiao/react-hook-tutorial
 
 > 尽管该教程是 1 年前写的，但是最近 1 年 react hooks 并未发生任何使用上的变化，所以该教程依然不过时，可以放心阅读。
+
+
+
+<br>
+
+**补充说明 3：**
+
+尽管现阶段非常推荐 Recoil，但是大家也不要忘了，还有世界上还有另外一个 React 状态管理库：jotai
+
+jotai 和 recoil 非常类似，且 jotai 有自己的特有优势：jotai 的 API 名称比 recoil 更短，更好记。 
+
+> 关于 API 名称这一点，可以查看本教程中的最后一篇 “05 Recoil 钩子函数(hooks) 名称的讨论”
 
 
 
