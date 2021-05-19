@@ -68,7 +68,7 @@ See rename proposal here for a potential future release: #804
 
 <br>
 
-**该帖子的地址：**https://github.com/facebookexperimental/Recoil/issues/804
+**该帖子的地址：** https://github.com/facebookexperimental/Recoil/issues/804
 
 
 
