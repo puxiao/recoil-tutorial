@@ -310,13 +310,15 @@ export function selector<T>(options: ReadOnlySelectorOptions<T>): RecoilValueRea
 
 我们可以看到，selector() 实际上可接受 2 种参数：
 
-1. ReadWriteSelectorOptions：需要配置 set 属性，用于 `读/写` 数据
-
 2. ReadOnlySelectorOptions：需要配置 get 属性，用于 `只读` 数据
 
    > get 对应的箭头函数中，有 2 个参数：get、getCallback
+   
+2. ReadWriteSelectorOptions：需要配置 set/get/reset 属性，用于 `读/写/重置` 数据
 
-在本文中，我们先学习一下 get 这种情况，至于 set 我们以后再详细讲解。
+   > 可以看出 selector() 的配置参数，无论是哪种配置类型，get 永远是必填项。
+
+在本文中，我们先学习一下 get 这种情况，至于 set/get/reset 我们以后再详细讲解。
 
 
 
