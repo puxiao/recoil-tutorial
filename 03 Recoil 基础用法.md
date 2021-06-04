@@ -164,12 +164,33 @@ export function atom<T>(options: AtomOptions<T>): RecoilState<T>;
 
 一共有 2 个必填属性、2 个选填属性：
 
-1.  key：变量全局唯一 ID，类型为字符串
+1. key：变量全局唯一 ID，类型为字符串
 
 2. default：变量默认值
 
-   > 请注意，默认值究竟是什么，也表明了该变量的 TS 数据类型。
+   > 请注意，如果不额外声明默认值 T 的类型，那么 TS 会自动推导出 T 的类型。
    >
+   > ```
+   > //示例1：自动推导出默认值类型为 number
+   > atom({
+   >   key:'xxxx',
+   >   value:2
+   > })
+   > //由于 TS 自动推导出值的类型为 number，那么后期我们是不可以将状态值修改为其他类型的值
+   > 
+   > 
+   > 
+   > //示例2：自定义 T 的类型
+   > atom< xxx | string | number | null >({
+   >   key:'xxxx',
+   >   value:2
+   > })
+   > //由于我们主动声明了 T 的类型为 `xxx | string | number | null`
+   > //那么后期我们是可以将值修改为符合以上类型的值
+   > ```
+
+   
+
    > 通过 TS 可以看到 Promise<T>，也就是支持异步设置变量默认值
    >
    > 至于如何设置，我们会在以后讲解
@@ -313,7 +334,7 @@ export function selector<T>(options: ReadOnlySelectorOptions<T>): RecoilValueRea
 2. ReadOnlySelectorOptions：需要配置 get 属性，用于 `只读` 数据
 
    > get 对应的箭头函数中，有 2 个参数：get、getCallback
-   
+
 2. ReadWriteSelectorOptions：需要配置 set/get/reset 属性，用于 `读/写/重置` 数据
 
    > 可以看出 selector() 的配置参数，无论是哪种配置类型，get 永远是必填项。
