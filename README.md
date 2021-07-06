@@ -1,4 +1,5 @@
 # recoil-tutorial
+
 Recoil 系列教程，学习和探索新一代 React 状态库。
 
 
@@ -39,16 +40,7 @@ Recoil 系列教程，学习和探索新一代 React 状态库。
 
 实际上 Recoil 并不复杂，我更加推荐的是直接去官网查看和学习。
 
-**Recoil官网地址：** https://recoiljs.org/
-
-<br>
-
-> 关于 Recoil 简体中文版文档，国内的站点有：
->
-> 1. https://www.recoiljs.cn/ (翻译的比较差)
-> 2. https://recoil.js.cn/ (翻译的还比较通顺)
->
-> 但是目前这 2 个网站有 1/2 的文章还未翻译完成，并且如同 React 文档一样，虽然每个汉字都能读懂，但是你可能就是理解不了他在说什么。
+**Recoil简体中文官网地址：** https://recoiljs.org/zh-hans/
 
 
 
