@@ -16,7 +16,7 @@ Recoil 系列教程，学习和探索新一代 React 状态库。
 
 Recoil 的一个核心原则是 “数据状态原子化，即数据最小不可分割”。这就导致在面对更新维护一个比较复杂的对象时 Recoil 显得捉襟见肘。
 
-**强烈推荐另外一个状态管理库：zustand **
+**强烈推荐另外一个状态管理库：zustand**
 
 zustand：https://github.com/pmndrs/zustand
 
